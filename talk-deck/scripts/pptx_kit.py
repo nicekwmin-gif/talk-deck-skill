@@ -60,6 +60,17 @@ def rect(slide, x, y, w, h, fill=None, line=None, shape=MSO_SHAPE.RECTANGLE, rad
     return s
 
 
+def _east_asian(run, typeface):
+    """Also set the East Asian font, so Korean/Japanese/Chinese text uses the deck font instead of a fallback."""
+    rPr = run._r.get_or_add_rPr()
+    for el in rPr.findall(qn('a:ea')): rPr.remove(el)
+    ea = etree.SubElement(rPr, qn('a:ea')); ea.set('typeface', typeface)
+    latin = rPr.find(qn('a:latin'))
+    if latin is not None: latin.addnext(ea)
+    if any('가' <= ch <= '힣' for ch in run.text):   # Hangul: with latinLnBrk=0 this keeps words whole
+        rPr.set('lang', 'ko-KR'); rPr.set('altLang', 'en-US')
+
+
 def text(slide, x, y, w, h, paras, size=16, color=None, bold=False, align=PP_ALIGN.LEFT, anchor=MSO_ANCHOR.TOP,
          italic=False, space_after=0, line_spacing=None, margin=0, shape=None, name=None):
     """Add a text box (or fill `shape`, e.g. a rect, replacing its text)."""
@@ -75,12 +86,14 @@ def text(slide, x, y, w, h, paras, size=16, color=None, bold=False, align=PP_ALI
     for i, para in enumerate(paras):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
         p.alignment = align
+        p._p.get_or_add_pPr().set('latinLnBrk', '0')   # Korean: wrap at spaces, never inside a word
         if space_after: p.space_after = Pt(space_after)
         if line_spacing: p.line_spacing = line_spacing
         for r in (para if isinstance(para, list) else [para]):
             t, o = (r, {}) if isinstance(r, str) else r
             run = p.add_run(); run.text = t
             f = run.font; f.name = o.get('font', THEME['font']); f.size = Pt(o.get('size', size))
+            _east_asian(run, o.get('font', THEME['font']))
             f.bold = o.get('bold', bold); f.italic = o.get('italic', italic); f.color.rgb = rgb(o.get('color', color))
             if o.get('sub'): run.font._element.set('baseline', '-25000')
             if o.get('sup'): run.font._element.set('baseline', '30000')
