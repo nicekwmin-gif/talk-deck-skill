@@ -1,4 +1,4 @@
-# talk-deck 스킬 v1.0 (2026-11-12)
+# talk-deck 스킬 v1.1 (2026-11-12)
 
 데이터·결과가 이미 있는 내용을 발표용 PPT로 만드는 에이전트 스킬이에요. 기업 대상 데이터·제품 설명, 행사 발표, 연구 발표에 쓸 수 있어요.
 Codex와 Claude Code가 같은 형식(SKILL.md)을 읽기 때문에 폴더 하나로 양쪽에서 써요.
@@ -12,19 +12,22 @@ Codex와 Claude Code가 같은 형식(SKILL.md)을 읽기 때문에 폴더 하�
 | `talk-deck/references/storyline_and_review.md` | 한 줄 메시지, 발표 종류별 장 구성, 검토 지시문, 대본 쓰는 법 |
 | `talk-deck/references/design_system.md` | "AI가 만든 슬라이드" 증상 11가지, 글자 4단계, 색, 슬라이드 틀 |
 | `talk-deck/references/final_review_checklist.md` | 주장 강도, 일치 검사, 디자인·기술 검사 |
-| `talk-deck/scripts/` | `pptx_kit.py`(python-pptx 헬퍼), `render_pptx.ps1`(PNG 렌더), `overview_grid.py`(전체 썸네일), `export_slides.py`(일부 장만 저장) |
+| `talk-deck/scripts/` | `check_env.py`(환경 점검·패키지 설치), `pptx_kit.py`(python-pptx 헬퍼), `render_pptx.ps1`(PNG 렌더), `overview_grid.py`(전체 썸네일), `export_slides.py`(일부 장만 저장) |
 
 ## 필요한 환경
 
 | 항목 | 필요 여부 | 메모 |
 |---|---|---|
 | 파일을 읽고 스크립트를 실행하는 에이전트 (Codex CLI·IDE, Claude Code) | 필수 | 채팅창에 붙여 넣는 방식으로는 렌더·검수 단계가 돌지 않아요 |
-| Python 3 + `python-pptx`, `Pillow` | 필수 | `pip install python-pptx pillow` |
+| Python 3 | 필수 | 직접 설치해야 해요 |
+| `python-pptx`, `Pillow`, `matplotlib` | 필수(matplotlib은 선택) | 에이전트가 처음 쓸 때 `check_env.py --install`로 설치해요 |
 | Windows + PowerPoint | 권장 | 렌더가 실제 PowerPoint 화면과 같아요 |
 | LibreOffice + poppler(`pdftoppm`) | PowerPoint가 없을 때 | Mac·Linux용 대체 경로. 글꼴·줄바꿈이 조금 달라요 |
 | 웹 검색 도구 | 권장 | 없으면 배경 자료·사진을 에이전트가 수집하지 못하고 목록만 넘겨요 |
 
 ## 설치
+
+스킬만 받으면 돼요. 다른 스킬은 필요 없고, 빠진 Python 패키지는 에이전트가 처음 실행할 때 점검해서 설치해요. PowerPoint나 LibreOffice 같은 프로그램은 자동으로 설치하지 않고 먼저 물어봐요.
 
 가장 쉬운 방법은 저장소를 스킬 폴더 아래에 바로 받는 거예요.
 
